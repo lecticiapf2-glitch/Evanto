@@ -44,7 +44,7 @@ KW3_Y = 440
 # Version 4: one line, brush script only, soft butter colour, sits above the forehead
 KEYWORDS_V4 = ["A família ficou", "E agora?", "O Natal tá chegando", "Amigo secreto", "Presente de Natal",
                "Fazer as pazes", "Errei, fui babaca", "Festas em família", "Segue @lecticia.scott"]
-KW4_Y = 265           # line centre (output px): between the Reels top bar and the top of the head
+KW4_Y = 300           # line centre (output px): below the player/Reels top bar, above the forehead
 KW4_SIZE = 96
 KW4_MAXW = 860
-KW4_COLOR = __import__("os").environ.get("KW4_COLOR", "245,228,176")   # baby yellow / beige
+KW4_COLOR = __import__("os").environ.get("KW4_COLOR", "244,218,146")   # baby yellow, almost beige
