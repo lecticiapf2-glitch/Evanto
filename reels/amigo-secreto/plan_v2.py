@@ -40,3 +40,11 @@ KEYWORDS_V3 = [("só que a", "Família ficou"), ("e", "Agora?"), ("o Natal tá",
 LEAD_FONT = __import__("os").path.dirname(__file__) + "/fonts/mr-de-haviland-latin-400-normal.ttf"
 MAIN_FONT = __import__("os").path.dirname(__file__) + "/fonts/kaushan-script-latin-400-normal.ttf"
 KW3_Y = 440
+
+# Version 4: one line, brush script only, soft butter colour, sits above the forehead
+KEYWORDS_V4 = ["A família ficou", "E agora?", "O Natal tá chegando", "Amigo secreto", "Presente de Natal",
+               "Fazer as pazes", "Errei, fui babaca", "Festas em família", "Segue @lecticia.scott"]
+KW4_Y = 265           # line centre (output px): between the Reels top bar and the top of the head
+KW4_SIZE = 96
+KW4_MAXW = 860
+KW4_COLOR = __import__("os").environ.get("KW4_COLOR", "245,228,176")   # baby yellow / beige
