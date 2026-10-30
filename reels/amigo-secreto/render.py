@@ -2,7 +2,6 @@ import subprocess, sys, numpy as np, cv2
 sys.path.insert(0, sys.argv[3])
 from plan import *
 
-SRC, OUT = sys.argv[1], sys.argv[2]
 W, H = 576, 1024
 OW, OH = 1080, 1920
 BASE = OW / W
@@ -57,31 +56,33 @@ def underline(o, t, M):
     return cv2.addWeighted(layer, 0.9 * alpha, o, 1 - 0.9 * alpha, 0)
 
 
-dec = subprocess.Popen(["ffmpeg", "-v", "error", "-i", SRC, "-f", "rawvideo", "-pix_fmt", "bgr24", "-"],
-                       stdout=subprocess.PIPE)
-enc = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24",
-                        "-s", f"{OW}x{OH}", "-r", str(FPS), "-i", "-",
-                        "-c:v", "libx264", "-preset", "slow", "-crf", "17", "-pix_fmt", "yuv420p", OUT],
-                       stdin=subprocess.PIPE)
-n_total = int(DUR * FPS)
-i = 0
-while True:
-    b = dec.stdout.read(W * H * 3)
-    if len(b) < W * H * 3:
-        break
-    t = i / FPS
-    f = np.frombuffer(b, np.uint8).reshape(H, W, 3).copy()
-    f = shine(f, t)
-    z = zoom_at(t)
-    s = BASE * z
-    ax, ay = W / 2, H * ANCHOR_Y
-    M = np.array([[s, 0, OW / 2 - ax * s], [0, s, OH * ANCHOR_Y - ay * s]], np.float32)
-    o = cv2.warpAffine(f, M, (OW, OH), flags=cv2.INTER_LANCZOS4, borderMode=cv2.BORDER_REFLECT)
-    o = underline(o, t, M)
-    rem = DUR - t
-    if rem < FADE_OUT:
-        o = (o.astype(np.float32) * max(rem / FADE_OUT, 0)).astype(np.uint8)
-    enc.stdin.write(o.tobytes())
-    i += 1
-enc.stdin.close(); enc.wait()
-print("frames", i)
+if __name__ == "__main__":
+    SRC, OUT = sys.argv[1], sys.argv[2]
+    dec = subprocess.Popen(["ffmpeg", "-v", "error", "-i", SRC, "-f", "rawvideo", "-pix_fmt", "bgr24", "-"],
+                           stdout=subprocess.PIPE)
+    enc = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24",
+                            "-s", f"{OW}x{OH}", "-r", str(FPS), "-i", "-",
+                            "-c:v", "libx264", "-preset", "slow", "-crf", "17", "-pix_fmt", "yuv420p", OUT],
+                           stdin=subprocess.PIPE)
+    n_total = int(DUR * FPS)
+    i = 0
+    while True:
+        b = dec.stdout.read(W * H * 3)
+        if len(b) < W * H * 3:
+            break
+        t = i / FPS
+        f = np.frombuffer(b, np.uint8).reshape(H, W, 3).copy()
+        f = shine(f, t)
+        z = zoom_at(t)
+        s = BASE * z
+        ax, ay = W / 2, H * ANCHOR_Y
+        M = np.array([[s, 0, OW / 2 - ax * s], [0, s, OH * ANCHOR_Y - ay * s]], np.float32)
+        o = cv2.warpAffine(f, M, (OW, OH), flags=cv2.INTER_LANCZOS4, borderMode=cv2.BORDER_REFLECT)
+        o = underline(o, t, M)
+        rem = DUR - t
+        if rem < FADE_OUT:
+            o = (o.astype(np.float32) * max(rem / FADE_OUT, 0)).astype(np.uint8)
+        enc.stdin.write(o.tobytes())
+        i += 1
+    enc.stdin.close(); enc.wait()
+    print("frames", i)
