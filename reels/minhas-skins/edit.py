@@ -445,7 +445,8 @@ if not PREVIEW:
     build_audio()
 enc = None if PREVIEW else subprocess.Popen(
     ["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{OW}x{OH}", "-r", str(FPS), "-i", "-",
-     "-i", f"{WD}/mix.wav", "-c:v", "libx264", "-preset", "medium", "-crf", "19", "-pix_fmt", "yuv420p",
+     "-i", f"{WD}/mix.wav", "-c:v", "libx264", "-preset", os.environ.get("X264_PRESET", "medium"), "-crf", os.environ.get("CRF", "19"),
+     "-pix_fmt", "yuv420p",
      "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", "48000", "-c:a", "aac", "-b:a", "192k",
      "-shortest", "-movflags", "+faststart", OUT], stdin=subprocess.PIPE)
 frames = [int(round((p + LEAD) * FPS)) for p in PREVIEW] if PREVIEW else range(int(DUR * FPS))
