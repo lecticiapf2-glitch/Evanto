@@ -74,8 +74,8 @@ KEYWORDS = [
     (96.7, 102.1, "Quantas você usou hoje?", "whoosh"),
     (102.5, VO_LEN + TAIL, "Segue @lecticia.scott", "pen"),
 ]
-# background music: bossa nova "Cozy Luxury" (Suno, conta lecticiascott), very low and ducked under the voice
-MUSIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../biblioteca/musicas/Cozy_Vlog_1.mp3")
+# background music: bossa nova "Café com Bossa" (Suno, conta lecticiascott), very low and ducked under the voice
+MUSIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../biblioteca/musicas/Cafe_com_Bossa.mp3")
 MUSIC_UNDER_DB, MUSIC_GAP_DB = -14, -8
 CAPTION_FIX = {"à": "a", "que_56.04": "aqui"}
 
