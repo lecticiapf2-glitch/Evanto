@@ -306,9 +306,9 @@ def draw_pip(o, t):
     seg0 = a + k * (b - a) / len(parts)
     w, h = 300, 470
     u = ease((t - a) / 0.25) * (1 if t < b - 0.25 else ease((b - t) / 0.25))
-    x = int(OW - 40 - w + (1 - u) * (w + 60)); y = 860
+    x = int(OW - 40 - w + (1 - u) * 30); y = 860          # short slide + fade, never leaves the frame
     tile = cover(src(("pip", seg0), take, si, seg0, t), w, h, .42)
-    paste(o, tile, x, y, rounded_mask(w, h, 28), border=4)
+    paste(o, tile, x, y, rounded_mask(w, h, 28), border=4, alpha=u)
     over(o, PIP_LABEL, x + w / 2, y - 40, 1.0, u)
 
 
