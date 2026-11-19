@@ -74,6 +74,9 @@ KEYWORDS = [
     (96.7, 102.1, "Quantas você usou hoje?", "whoosh"),
     (102.5, VO_LEN + TAIL, "Segue @lecticia.scott", "pen"),
 ]
+# background music: bossa nova "Cozy Luxury" (Suno, conta lecticiascott), very low and ducked under the voice
+MUSIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../biblioteca/musicas/Cozy_Vlog_1.mp3")
+MUSIC_UNDER_DB, MUSIC_GAP_DB = -14, -8
 CAPTION_FIX = {"à": "a", "que_56.04": "aqui"}
 
 # ---------------- video readers ----------------
@@ -412,6 +415,17 @@ def build_audio():
     for a, b, parts, labels in SPLITS:
         place(whoosh(), a - 0.12)
     place(pop(), PIP[0])
+    if MUSIC:
+        mus = read_wav(MUSIC)
+        mus = np.resize(mus, (n, 2)) if len(mus) < n else mus[:n]
+        mus = mus / (np.sqrt(np.mean(mus ** 2)) + 1e-9) * 0.1        # bring the track to a fixed RMS
+        # duck under the voice: smoothed voice envelope -> gain between "gap" and "speech" levels
+        env = np.zeros(n); seg = np.abs(vo[:, 0]); env[s:s + len(seg)] = seg[:n - s]
+        k = int(0.25 * SR); env = np.convolve(env, np.ones(k) / k, mode="same")
+        speaking = np.clip(env / 0.02, 0, 1)
+        gain = db(MUSIC_GAP_DB) + (db(MUSIC_UNDER_DB) - db(MUSIC_GAP_DB)) * speaking
+        fade = np.minimum(1, np.arange(n) / SR / 1.5)
+        mix += mus * (gain * fade)[:, None].astype(np.float32)
     tail = int(0.6 * SR); mix[-tail:] *= np.linspace(1, 0, tail)[:, None]
     with wave.open(f"{WD}/mix.wav", "wb") as w:
         w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
@@ -420,6 +434,13 @@ def build_audio():
 
 # ---------------- render ----------------
 PREVIEW = [float(x) for x in os.environ.get("PREVIEW", "").split(",") if x]
+if os.environ.get("AUDIO_ONLY"):               # remix the sound and keep the already rendered picture
+    build_audio()
+    tmp = OUT + ".tmp.mp4"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", OUT, "-i", f"{WD}/mix.wav", "-map", "0:v", "-map", "1:a",
+                    "-c:v", "copy", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", "48000", "-c:a", "aac", "-b:a", "192k",
+                    "-shortest", "-movflags", "+faststart", tmp], check=True)
+    os.replace(tmp, OUT); print("audio remixed"); sys.exit(0)
 if not PREVIEW:
     build_audio()
 enc = None if PREVIEW else subprocess.Popen(

@@ -15,4 +15,12 @@ Use sempre bem baixinho embaixo da voz (cerca de -24 dB abaixo da fala) e abaixe
 
 ## musicas/
 
-Pasta reservada para as músicas que a Lecticia vai enviar (ex.: bossa nova instrumental para vlog).
+| Arquivo | Título no Suno | Duração | Clima / quando usar |
+|---|---|---|---|
+| `Cozy_Vlog_1.mp3` | Cozy Luxury | 3:19 | Bossa nova instrumental estilo vlog. Rotina, casa, café, lifestyle. Usada no Reels "Minhas skins". |
+| `Cozy_Luxury_vlog_2.mp3` | Cozy Luxury | 3:29 | Outra versão da mesma bossa nova. |
+| `Breaking_News_supense.mp3` | Breaking News | 1:59 | Suspense de notícia urgente. Anúncios, revelações, "notícia bombástica". |
+| `Do_Not_Answer_the_Knock.mp3` | Do Not Answer the Knock | 0:44 | Suspense/tensão. Ganchos de mistério. |
+| `Do_Outro_Lado_da_Tela.mp3` | Do Outro Lado da Tela | 4:47 | Faixa longa; conferir se tem letra antes de usar como fundo de narração. |
+
+Mais músicas: a Lecticia tem assinatura do Suno; dá para gerar trilhas novas quando o Suno estiver conectado.
